@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>예약현황</title>
+<link rel="stylesheet" type="text/css"
+	href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/vader/jquery-ui.min.css">
+<style>
+/*테이블 스타일*/
+.table_width {
+	width: 100%;
+	border-top: 1px solid #cccccc;
+	font-size: 14px;
+}
+
+.table_width th {
+	padding: 15px 20px;
+	letter-spacing: -1px;
+	/*background: #f4f6f9;*/
+	font-size: 16px;
+	font-weight: bold;
+	color: #333333;
+	border-bottom: 1px solid #ebebeb;
+	vertical-align: middle;
+	text-align: left;
+	background-color: #ffc61c;
+}
+
+.table_width td {
+	border-bottom: 1px solid #ebebeb;
+	padding: 7px 20px;
+	vertical-align: middle
+}
+
+.table_width td input[type="text"]:focus {
+	background: #faffbd
+}
+
+.main {
+	width: 1024px;
+	margin: 60px auto;
+	overflow: hidden;
+}
+h2.title{
+color : #ffc61c
+}
+</style>
+</head>
+<body>
+	<div class="main">
+		<h2 class="title">[[${projectName}]]
+		</h2>
+		<div>
+			<h2>예약하기</h2>
+			<form id="resevFrm">
+				<table class="table_width">
+		
+					<tr>
+						<th scope="row">회의실ID</th>
+						<td><select name="conferenceId" id="conferenceId">
+						</select>
+					</tr>
+					<tr>
+						<th scope="row">예약자명</th>
+						<td><input type="text" name="registedName" id="registedName"></td>
+					</tr>
+					<tr>
+						<th scope="row">예약명</th>
+						<td><input type="text" name="reservationName"
+							id="reservationName"></td>
+					</tr>
+					<tr>
+						<th scope="row">예약일</th>
+						<td><input type="text" id="reservationDate"
+							class="datepicker" name="reservationDate"></td>
+					</tr>
+					<tr>
+						<th scope="row">예약시간</th>
+						<td><input name="startTime" type="text" class="timeMasking"
+							id="startTime" maxlength=5> <input name="endTime"
+							type="text" class="timeMasking" id="endTime" maxlength=5>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">반복횟수</th>
+						<td><input type="number" name="repetitionOfNum"
+							id="repetitionOfNum"></td>
+					</tr>
+
+				</table>
+			</form>
+			<button type="button" id="saveBtn">예약하기</button>
+		</div>
+		<div>
+			<h2>예약현황</h2>
+			<input type="text" id="searchDate" class="datepicker"
+				name="searchDate">
+			<button type="button" id="searchBtn">조회</button>
+			<table class="table_width">
+						<colgroup id="colg">
+						
+					</colgroup>
+				<thead id="conferenceTh">
+
+				</thead>
+				<tbody id="reservationTb">
+
+				</tbody>
+
+			</table>
+
+		</div>
+
+	</div>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
+<script type="text/javascript">
+/**
+ * 초기화 
+ */
+$.initialization = function() {
+
+    $("form")[0].reset();
+    $("#reservationDate").datepicker('setDate', new Date());
+}
+
+/**
+ * 예약등록
+ */
+$.saveReservation = function() {
+    if (!$.timeMaskingCheck($("#startTime").val())) {
+        $("#startTime").focus();
+        return false;
+    }
+    if (!$.timeMaskingCheck($("#endTime").val())) {
+        $("#endTime").focus();
+        return false;
+    }
+
+    var param = $("#resevFrm").serializeObject();
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: "POST",
+        url: "/reservation/new",
+        dataType: "JSON",
+        data: JSON.stringify(param),
+        contentType: "application/json;charset=UTF-8",
+        success: function(data) {
+            if (data.message != undefined) {
+                alert(data.message);
+            } else {
+                $.initialization();
+                $.getList();
+            }
+
+
+
+        },
+        error: function(e) {
+
+            if (e.message !== undefined) {
+                alert(e.message);
+            }
+        }
+    });
+}
+
+/**
+ * 예약조회
+ */
+$.getList = function() {
+    $.getConferenceList();
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: "GET",
+        url: "/reservation",
+        data: {
+            searchDate: $("#searchDate").val()
+        },
+        dataType: "JSON",
+        contentType: "application/json;charset=UTF-8",
+        success: function(data) {
+            if (data.message !== undefined) {
+                alert(data.message);
+            }
+            if (data != null) {
+
+                var detailData = data.reservationDetail;
+
+                var resultStr = "";
+                var resultArray = [];
+                $(detailData).each(function(i, k) {
+
+                    var idText = k.reservationDetailPrimaryKey.conference.id;
+
+                    resultStr = "<li>" + k.reservationDetailPrimaryKey.reservation.registedName + ":" + k.reservationDetailPrimaryKey.reservation.reservationName + "\n" + k.startTime + "-" + k.endTime + "</li>";
+                    $("#" + idText).append(resultStr);
+
+                });
+
+            } else {
+                $.getConferenceList(); //목록 초기화
+            }
+        },
+        error: function(e) {
+            $.getConferenceList();
+            if (e.message !== undefined) {
+                alert(e.message);
+            }
+
+
+        }
+    });
+}
+
+/**
+ * 회의실 조회
+ */
+$.getConferenceList = function() {
+
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        type: "GET",
+        url: "/conference",
+        dataType: "JSON",
+        contentType: "application/json;charset=UTF-8",
+        success: function(data) {
+
+            var resultOption = "";
+            var resultTh = "";
+            var resultTb = "";
+            var resultColgroup = "";
+            $(data).each(function(i, v) {
+                resultOption += "<option value=" + v.id + ">" + v.conferenceName + "</option>";
+                resultTh += "<th>" + v.conferenceName + "</th>";
+                resultTb += "<td><div id=" + v.id + " name=\"reservationDiv\"></div></td>";
+                resultColgroup +="<col style=\"width:"+1/data.length*100+"%\">";
+            });
+
+            $("#colg").html(resultColgroup);
+            $("#conferenceId").html(resultOption);
+            $("#conferenceTh").html(resultTh);
+            $("#reservationTb").html(resultTb);
+
+        },
+        error: function(e) {
+
+
+            alert(e.message);
+
+        }
+    });
+}
+$.timeMaskingCheck = function(obj) {
+    regexp = /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/;
+
+    v = obj;
+
+    if (!regexp.test(v)) {
+
+        alert("00:00형식만 입력가능합니다.");
+        return false;
+
+    }
+
+    return true;
+}
+$(document).ready(function() {
+
+    $(".datepicker").datepicker({
+        dateFormat: 'yy-mm-dd',
+        showOtherMonths: true,
+        showMonthAfterYear: true,
+        changeYear: true,
+        changeMonth: true,
+        showOn: "both",
+        buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+        buttonImageOnly: true,
+        buttonText: "선택",
+        yearSuffix: "년",
+        monthNamesShort: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
+
+    });
+
+    $(".datepicker").datepicker('setDate', new Date());
+
+
+    $("#saveBtn").click(function(e) {
+        $.saveReservation();
+    });
+
+
+    $("#searchBtn").click(function(e) {
+        $.getList();
+    });
+
+
+
+
+    $.getList();
+});
+</script>
+</body>
+</html>
