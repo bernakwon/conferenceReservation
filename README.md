@@ -10,7 +10,7 @@ programed By hrkwon
 - JuitTest
 --------------------------------------------
 ## build Method
-clone https://github.com/bernakwon/reservation.git
+clone https://github.com/bernakwon/conferenceReservation.git
 ->import project
 >자바만 설치되어 있다고 가정한다. JAVA 8 은 로컬에 설치되어 있어야 한다. eclipse 기준으로 설명한다. InteliJ에서는 별도로 lombok플러그인을 제공한다. 
 
