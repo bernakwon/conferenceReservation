@@ -28,8 +28,8 @@ clone https://github.com/bernakwon/conferenceReservation.git
     - project->properties->resource에서 text file encoding을 UTF-8로 변경한다.
 
 #### Run
-    > Run->Run As ->Spring Boot App
-    > 포트 설정을 7070으로 해두었기때문에 localhost:7070으로 접속해야한다.
+    - Run->Run As ->Spring Boot App
+    - 포트 설정을 7070으로 해두었기때문에 localhost:7070으로 접속해야한다.
 --------------------------------------------
 ## 요구사항과 개발전략
 
