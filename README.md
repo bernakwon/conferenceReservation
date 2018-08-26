@@ -83,7 +83,7 @@ clone https://github.com/bernakwon/conferenceReservation.git
 
   	2. 요구사항2 :  예약일과 반복횟수를 이용하여 예약일리스트로 반환하여 처리, LocalDate의 plusWeek 메서드를 이용하여 주단위 예약설
 
-  	3. 요구사항3 :  예약상세 테이블의 예약일ID가 있고, 시작시간이 종료시간사이에 데이터가 있는자를 체크, 중복된 데이터가 있는경우 ReservationReduplicationException호출
+  	3. 요구사항3 :  예약상세 테이블의 예약일ID가 있고, 시작시간이 종료시간사이에 데이터가 있는지 체크, 중복된 데이터가 있는경우 ReservationReduplicationException호출
 
   	4. 요구사항4 :  JPA의 낙관전락 기법을 사용하여 처리, 각 Entity class에 @Version을 설정  
 
