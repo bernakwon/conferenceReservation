@@ -14,10 +14,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Embeddable
-@Data
+@Getter@Setter
 public class ReservationDetailPrimaryKey implements Serializable{
 
 
@@ -56,5 +58,10 @@ public class ReservationDetailPrimaryKey implements Serializable{
 		this.reservatedDate = reservatedDate;
 		this.reservation = reservation;
 	}
+
+	public ReservationDetailPrimaryKey() {
+		super();
+	}
+	
 	
 }

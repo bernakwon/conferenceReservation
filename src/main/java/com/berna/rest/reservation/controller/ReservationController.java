@@ -33,8 +33,8 @@ public class ReservationController {
 	 * @Description 예약일 기준으로 예약목록을 조회한다.
 	 */
 	@GetMapping("/reservation")
-	public ReservatedDate getReservationList(@RequestParam("searchDate") String searchDate) throws Exception {
-		return reservationService.getReservationList(LocalDate.parse(searchDate));
+	public ReservatedDate getReservationList(@RequestParam("reservationDate") String reservationDate) throws Exception {
+		return reservationService.getReservationList(LocalDate.parse(reservationDate));
 
 	}
 
