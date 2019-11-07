@@ -1,0 +1,13 @@
+package com.berna.domain.reservation.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.berna.domain.reservation.domain.Reservation;
+
+/**
+ * @author hrkwon
+ * @interfaceName ReservationRepository
+ * 
+ */
+public interface ReservationRepository extends JpaRepository<Reservation,Long>{
+
+}

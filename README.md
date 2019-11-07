@@ -89,12 +89,11 @@ clone https://github.com/bernakwon/conferenceReservation.git
 
   	5. 단위테스트 : serviceImpl단의 주요로직 검증
 
-  	6. 에러처리 :  @ExcepionHander와 @ControllerAdvise를 이용하여 에러정보를 리턴
+  	6. 에러처리 :  @ExcepionHandler와 @ControllerAdvice를 이용하여 에러정보를 리턴
+   
+---------------------------------------------  
 
-  
-
-   --------------------------------------------
-
-  
+   #### 테스트 전략
+   
 
 

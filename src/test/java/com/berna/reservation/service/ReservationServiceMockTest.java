@@ -15,18 +15,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.berna.exception.ReservationReduplicationException;
-import com.berna.exception.TimeErrorException;
-import com.berna.rest.ReservationRegistParam;
-import com.berna.rest.conference.domain.Conference;
-import com.berna.rest.reservation.domain.ReservatedDate;
-import com.berna.rest.reservation.domain.Reservation;
-import com.berna.rest.reservation.domain.ReservationDetail;
-import com.berna.rest.reservation.domain.ReservationDetailPrimaryKey;
-import com.berna.rest.reservation.repository.ReservatedDateRepository;
-import com.berna.rest.reservation.repository.ReservationDetailRepository;
-import com.berna.rest.reservation.repository.ReservationRepository;
-import com.berna.rest.reservation.service.ReservationServiceImpl;
+import com.berna.global.error.exception.ReservationReduplicationException;
+import com.berna.global.error.exception.TimeErrorException;
+import com.berna.domain.reservation.dto.ReservationRegistParam;
+import com.berna.domain.conference.domain.Conference;
+import com.berna.domain.reservation.domain.ReservatedDate;
+import com.berna.domain.reservation.domain.Reservation;
+import com.berna.domain.reservation.domain.ReservationDetail;
+import com.berna.domain.reservation.domain.ReservationDetailPrimaryKey;
+import com.berna.domain.reservation.repository.ReservatedDateRepository;
+import com.berna.domain.reservation.repository.ReservationDetailRepository;
+import com.berna.domain.reservation.repository.ReservationRepository;
+import com.berna.domain.reservation.service.ReservationServiceImpl;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ReservationServiceMockTest {
