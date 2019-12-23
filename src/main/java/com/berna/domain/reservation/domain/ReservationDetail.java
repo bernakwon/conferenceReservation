@@ -32,11 +32,11 @@ public class ReservationDetail implements Serializable{
 	/*시작시간*/
 	@Column(name="START_TIME")
 	private String startTime;
-	
+
 	/*종료시간*/
 	@Column(name="END_TIME")
 	private String endTime;
-	
+
 	/*버전*/
 	@Version
 	private long version;

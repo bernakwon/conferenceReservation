@@ -1,4 +1,4 @@
-package com.berna.domain.reservation.repository;
+package com.berna.domain.reservation.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.berna.domain.reservation.domain.Reservation;

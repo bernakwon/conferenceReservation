@@ -43,7 +43,7 @@ public class ReservatedDate implements Serializable{
 	/*예약일*/
 	@Column(name = "RESERVATION_DATE")
 	private LocalDate reservationDate;
-	
+
 	/**
 	 * ReservationDetail과 1:n관계, Json조회시 ReservatedDate쪽에서 조회된다.
 	 * */

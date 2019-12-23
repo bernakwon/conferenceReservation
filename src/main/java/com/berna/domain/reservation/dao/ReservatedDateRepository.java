@@ -1,4 +1,4 @@
-package com.berna.domain.reservation.repository;
+package com.berna.domain.reservation.dao;
 
 import java.time.LocalDate;
 

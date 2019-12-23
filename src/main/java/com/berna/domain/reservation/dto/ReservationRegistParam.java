@@ -22,6 +22,22 @@ private Long conferenceId;
    private String reservationName;
    private Long reservationId;
 
- 
-   
+   /**
+    * @author hrkwon
+    * @return Boolean
+    * @Description 분단위가 정시나 30분 단위인지 체크
+    *
+    */
+   public Boolean isthirtyMinuteCheck() {
+      Boolean thirtyMinuteCheck = false;
+      int compareStartTimeMinute = LocalTime.parse(this.startTime).getMinute();
+      int compareEndTimeMinute = LocalTime.parse(this.endTime).getMinute();
+      if ((compareStartTimeMinute == 0 || compareStartTimeMinute == 30)
+              && (compareEndTimeMinute == 0 || compareEndTimeMinute == 30)) {
+         thirtyMinuteCheck = true;
+      }
+      return thirtyMinuteCheck;
+   }
+
+
 }

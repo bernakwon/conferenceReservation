@@ -1,6 +1,9 @@
 package com.berna.domain.reservation.controller;
 
 import java.time.LocalDate;
+
+import com.berna.domain.reservation.dao.ReservationFindDao;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +23,12 @@ import com.berna.domain.reservation.service.ReservationService;
  * @description 예약을 조회,저장 데이터호출
  */
 @RestController
+@RequiredArgsConstructor
 public class ReservationController {
 	Logger LOGGER = LoggerFactory.getLogger(ReservationController.class);
-	@Autowired
-	ReservationService reservationService;
 
+	private final ReservationService reservationService;
+	private final ReservationFindDao reservationFindDao;
 	/**
 	 * @author hrkwon
 	 * @method Get
@@ -34,7 +38,7 @@ public class ReservationController {
 	 */
 	@GetMapping("/reservation")
 	public ReservatedDate getReservationList(@RequestParam("reservationDate") String reservationDate) throws Exception {
-		return reservationService.getReservationList(LocalDate.parse(reservationDate));
+		return reservationFindDao.getReservationList(LocalDate.parse(reservationDate));
 
 	}
 

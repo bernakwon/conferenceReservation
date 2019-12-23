@@ -11,8 +11,6 @@ import com.berna.domain.reservation.domain.ReservatedDate;
  */
 public interface ReservationService {
 
-	public ReservatedDate getReservationList(LocalDate localDate);
-
-	public Long create(ReservationRegistParam ReservationRegistParam);
+	Long create(ReservationRegistParam ReservationRegistParam);
 
 }

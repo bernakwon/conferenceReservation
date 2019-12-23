@@ -1,7 +1,8 @@
-package com.berna.domain.reservation.repository;
+package com.berna.domain.reservation.dao;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.berna.domain.reservation.domain.ReservationDetail;
@@ -29,4 +30,6 @@ public interface ReservationDetailRepository extends JpaRepository<ReservationDe
 	 */
 	ReservationDetail findByReservationDetailPrimaryKey(ReservationDetailPrimaryKey pk);
 
+
+	Stream<ReservationDetail> findByReservationDetailPrimaryKeyConferenceIdAndReservationDetailPrimaryKeyReservatedDateReservationDateIn(Long conferenceId, List<LocalDate> reservatedDates);
 }
