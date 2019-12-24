@@ -9,6 +9,11 @@ import static org.mockito.Mockito.verify;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.berna.domain.reservation.dao.ReservationFindDao;
+import com.berna.domain.reservation.service.ReservationComparedByFilter;
+import com.berna.domain.reservation.service.ReservationComparedByHash;
+import com.berna.domain.reservation.service.ReservationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,16 +28,19 @@ import com.berna.domain.reservation.domain.ReservatedDate;
 import com.berna.domain.reservation.domain.Reservation;
 import com.berna.domain.reservation.domain.ReservationDetail;
 import com.berna.domain.reservation.domain.ReservationDetailPrimaryKey;
-import com.berna.domain.reservation.repository.ReservatedDateRepository;
-import com.berna.domain.reservation.repository.ReservationDetailRepository;
-import com.berna.domain.reservation.repository.ReservationRepository;
-import com.berna.domain.reservation.service.ReservationServiceImpl;
+import com.berna.domain.reservation.dao.ReservatedDateRepository;
+import com.berna.domain.reservation.dao.ReservationDetailRepository;
+import com.berna.domain.reservation.dao.ReservationRepository;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ReservationServiceMockTest {
 
 	@InjectMocks
-	ReservationServiceImpl reservationService;
+	ReservationComparedByHash reservationService;
+	@InjectMocks
+	ReservationComparedByFilter ReservationComparedByFilter;
+	@InjectMocks
+	ReservationFindDao reservationFindDao;
 	@Mock
 	ReservationRepository reservationRepository;
 	@Mock
@@ -74,7 +82,7 @@ public class ReservationServiceMockTest {
 		
 		when(reservatedDateRepository.findByReservationDate(any(LocalDate.class))).thenReturn(testReservatedDate());
 		
-		ReservatedDate resultReservatedDate = reservationService.getReservationList(LocalDate.now());
+		ReservatedDate resultReservatedDate = reservationFindDao.getReservationList(LocalDate.now());
 		
 		assertThat(resultReservatedDate).isNotNull();
 		
@@ -139,7 +147,6 @@ public class ReservationServiceMockTest {
 		.reservationDate(LocalDate.now()).repetitionOfNum(1).reservationId(3L).reservationName("11")
 		.registedName("11").build();
 		reservationService.create(timeErrorTest);
-
 
 	}
 

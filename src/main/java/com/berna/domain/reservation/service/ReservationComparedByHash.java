@@ -1,10 +1,8 @@
 package com.berna.domain.reservation.service;
 
 import com.berna.domain.conference.domain.Conference;
-import com.berna.domain.reservation.domain.ReservatedDate;
-import com.berna.domain.reservation.domain.Reservation;
-import com.berna.domain.reservation.domain.ReservationDetail;
-import com.berna.domain.reservation.domain.ReservationDetailPrimaryKey;
+import com.berna.domain.reservation.dao.ReservatedHashRepository;
+import com.berna.domain.reservation.domain.*;
 import com.berna.domain.reservation.dto.ReservationRegistParam;
 import com.berna.domain.reservation.dao.ReservatedDateRepository;
 import com.berna.domain.reservation.dao.ReservationDetailRepository;
@@ -18,7 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -27,15 +27,18 @@ import java.util.stream.Stream;
  * @author hrkwon
  * @className ReservationServiceImpl
  */
-@Service("reservationService")
+@Service
 @RequiredArgsConstructor
-public class ReservationComparedByFilter implements ReservationService {
+public class ReservationComparedByHash implements ReservationService {
 
     private final ReservationRepository reservationRepository;
 
     private final ReservatedDateRepository reservatedDateRepository;
 
     private final ReservationDetailRepository reservationDetailRepository;
+
+    private final ReservatedHashRepository reservatedHashRepository;
+
 
     /**
      * @param ReservationRegistParam
@@ -94,6 +97,9 @@ public class ReservationComparedByFilter implements ReservationService {
 
         for (LocalDate reservatedDate : reservatedDates) {
 
+            List<ReservatedHash> saveReservatedHash = reservationRegistParam.getReservatedHash();
+            reservatedHashRepository.saveAll(saveReservatedHash);
+
             ReservatedDate saveReservatedDate = upsertReservatedDate(reservatedDate);
 
             ReservationDetailPrimaryKey pk = ReservationDetailPrimaryKey.builder()
@@ -106,6 +112,7 @@ public class ReservationComparedByFilter implements ReservationService {
                             .startTime(reservationRegistParam.getStartTime())
                             .reservationDetailPrimaryKey(pk)
                             .build());
+
             reservationDetailRepository.save(detail);
         }
     }
@@ -116,17 +123,14 @@ public class ReservationComparedByFilter implements ReservationService {
      * @author hrkwon
      * @Description 예약일이 예약일 관리 테이블에 존재하는지 체크 후 , 없으면 생성한다.
      */
-    public ReservatedDate upsertReservatedDate(LocalDate reservatedDate) {
+    private ReservatedDate upsertReservatedDate(LocalDate reservatedDate) {
+        ReservatedDate resultReservatedDate = Optional.ofNullable(reservatedDateRepository.findByReservationDate(reservatedDate))
+                .orElse(ReservatedDate.builder().reservationDate(reservatedDate).build());
 
-        ReservatedDate resultReservatedDate = reservatedDateRepository.findByReservationDate(reservatedDate);
-        if (resultReservatedDate == null) {
 
-            ReservatedDate saveReservatedDate = ReservatedDate.builder().reservationDate(reservatedDate).build();
-            reservatedDateRepository.save(saveReservatedDate);
-            return saveReservatedDate;
-        }
-        return resultReservatedDate;
+        return reservatedDateRepository.save(resultReservatedDate);
     }
+
 
     /**
      * @param ReservationRegistParam
@@ -134,20 +138,10 @@ public class ReservationComparedByFilter implements ReservationService {
      * @author hrkwon
      * @Description 예약이 중복인지 체크
      */
-    public Boolean isDuplicationCheck(ReservationRegistParam reservationRegistParam) {
-
-        List<LocalDate> reservatedDates = reservationRegistParam.culculateDates();
-        /*스트림으로 시간비교 제외 하고 받아옴*/
-        Stream<ReservationDetail> reservationDetails = reservationDetailRepository
-                .findByReservationDetailPrimaryKeyConferenceIdAndReservationDetailPrimaryKeyReservatedDateReservationDateIn(
-                        reservationRegistParam.getConferenceId(), reservatedDates);
-
-        long duplicationCheck =
-                reservationDetails.filter(reservationDetail -> LocalTime.parse(reservationRegistParam.getStartTime()).isBefore(LocalTime.parse(reservationDetail.getEndTime()))
-                        && LocalTime.parse(reservationRegistParam.getEndTime()).isAfter(LocalTime.parse(reservationDetail.getStartTime()))
-                ).count();
-        System.out.println(duplicationCheck);
-        return duplicationCheck == 0;
+    private Boolean isDuplicationCheck(ReservationRegistParam reservationRegistParam) {
+        int check = reservatedHashRepository.countByReservatedHashIn(reservationRegistParam.getReservatedIndex());
+        return check == 0;
     }
+
 
 }

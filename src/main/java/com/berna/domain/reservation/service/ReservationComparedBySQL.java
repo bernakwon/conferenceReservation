@@ -11,6 +11,7 @@ import com.berna.domain.reservation.dao.ReservationDetailRepository;
 import com.berna.domain.reservation.dao.ReservationRepository;
 import com.berna.global.error.exception.ReservationReduplicationException;
 import com.berna.global.error.exception.TimeErrorException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +28,15 @@ import java.util.stream.Stream;
  * @className ReservationServiceImpl
  */
 @Service
+@RequiredArgsConstructor
 public class ReservationComparedBySQL implements ReservationService {
 
-    @Autowired
-    ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
 
-    @Autowired
-    ReservatedDateRepository reservatedDateRepository;
+    private final ReservatedDateRepository reservatedDateRepository;
 
-    @Autowired
-    ReservationDetailRepository reservationDetailRepository;
+    private final ReservationDetailRepository reservationDetailRepository;
+
 
     /**
      * @param ReservationRegistParam
@@ -91,8 +91,7 @@ public class ReservationComparedBySQL implements ReservationService {
     private void saveReservatedDatesAndDetails(Reservation saveReservation,
                                                ReservationRegistParam reservationRegistParam) {
 
-        List<LocalDate> reservatedDates = culculateDates(reservationRegistParam.getReservationDate(),
-                reservationRegistParam.getRepetitionOfNum());
+        List<LocalDate> reservatedDates = reservationRegistParam.culculateDates();
 
         for (LocalDate reservatedDate : reservatedDates) {
 
@@ -131,20 +130,6 @@ public class ReservationComparedBySQL implements ReservationService {
     }
 
     /**
-     * @param LocalDate,int
-     * @return List<LocalDate>
-     * @author hrkwon
-     * @Description 반복체크시 예약일 리스트를 생성한다.
-     */
-    private List<LocalDate> culculateDates(LocalDate reservationDate, int repetitionOfNum) {
-        List<LocalDate> culculateDateList = new ArrayList<LocalDate>();
-        for (int loopCnt = 0; loopCnt < repetitionOfNum; loopCnt++) {
-            culculateDateList.add(reservationDate.plusWeeks(loopCnt));
-        }
-        return culculateDateList;
-    }
-
-    /**
      * @param ReservationRegistParam
      * @return Boolean
      * @author hrkwon
@@ -153,9 +138,8 @@ public class ReservationComparedBySQL implements ReservationService {
 
     private Boolean isDuplicationCheck(ReservationRegistParam reservationRegistParam) {
         Boolean FLAG = true;
-        List<LocalDate> reservatedDates = culculateDates(reservationRegistParam.getReservationDate(),
-                reservationRegistParam.getRepetitionOfNum());
-        //TODO 중복체크로직 쿼리에서 로직으로 변경필요
+        List<LocalDate> reservatedDates = reservationRegistParam.culculateDates();
+
         int duplicationCheck = reservationDetailRepository
                 .countByReservationDetailPrimaryKeyConferenceIdAndReservationDetailPrimaryKeyReservatedDateReservationDateInAndStartTimeLessThanAndEndTimeGreaterThan(
                         reservationRegistParam.getConferenceId(), reservatedDates, reservationRegistParam.getEndTime(),
