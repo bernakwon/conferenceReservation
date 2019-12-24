@@ -29,7 +29,6 @@ public class ReservationFindDao {
      */
     @Transactional
     public ReservatedDate getReservationList(LocalDate reservationDate) {
-
         return reservatedDateRepository.findByReservationDate(reservationDate);
     }
 

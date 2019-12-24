@@ -3,6 +3,7 @@ package com.berna.domain.reservation.controller;
 import java.time.LocalDate;
 
 import com.berna.domain.reservation.dao.ReservationFindDao;
+import com.berna.domain.reservation.service.ReservationComparedByHash;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import com.berna.domain.reservation.service.ReservationService;
 public class ReservationController {
 	Logger LOGGER = LoggerFactory.getLogger(ReservationController.class);
 
-	private final ReservationService reservationService;
+	private final ReservationComparedByHash reservationService;
 	private final ReservationFindDao reservationFindDao;
 	/**
 	 * @author hrkwon
